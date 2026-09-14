@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Poincaré Paint</title>
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+</head>
+<body>
+<div id="wrap"><canvas id="c" width="1200" height="1200"></canvas></div>
+
+<div id="ui">
+  <b>Poincaré Paint</b>
+
+  <div class="controls">
+    <div class="control-row single">
+      <div class="mobius-group">
+        <div class="mobius-label">
+          <span>Möbius transform X/Y</span>
+          <span id="mobiusCoords">0.00, 0.00</span>
+        </div>
+        <canvas id="mobiusPicker" width="320" height="150"></canvas>
+        <button id="reset">Reset view</button>
+      </div>
+    </div>
+
+    <div class="control-row single">
+      <div class="color-group">
+        <canvas id="colorField" width="320" height="72"></canvas>
+        <div class="xy-row">
+          <span class="axis">X</span>
+          <input id="colorX" type="range" min="0" max="1000" step="1" value="950">
+        </div>
+        <div class="xy-row">
+          <span class="axis">Y</span>
+          <input id="colorY" type="range" min="0" max="1000" step="1" value="360">
+        </div>
+      </div>
+    </div>
+
+    <div class="control-row single">
+      <label><span class="label-text">Brush</span><input id="brush" type="range" min="0.03" max="0.8" step="0.01" value="0.22"></label>
+    </div>
+    <div class="control-row single">
+      <label><span class="label-text">Opacity</span><input id="alpha" type="range" min="0.1" max="1" step="0.05" value="0.9"></label>
+    </div>
+    <div class="control-row single">
+      <label><span class="label-text">Slices</span><input id="slices" type="range" min="2" max="24" step="1" value="8"></label>
+    </div>
+  </div>
+
+  <div class="button-stack">
+    <div class="button-pair">
+      <button id="clear">Clear</button>
+      <button id="undo">Undo</button>
+    </div>
+    <button id="grid">Hide grid</button>
+    <div class="download-group">
+      <div class="download-heading">Download</div>
+      <div class="button-pair download-triple">
+        <button id="download">Image</button>
+        <button id="downloadSeed">Seed</button>
+        <button id="downloadBoth">Both</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="status">hyperbolic radius: <span id="br">0.22</span> &nbsp;•&nbsp; slices: <span id="sliceReadout">8</span> &nbsp;•&nbsp; middle-drag: Möbius move</div>
+
+<div id="seedbar">
+  <select id="seedMode" aria-label="Seed mode">
+    <option value="browser">Seed Browser</option>
+    <option value="freehand">Freehand</option>
+  </select>
+  <input id="seedInput" spellcheck="false" aria-label="Seed or drawing code" title="Editable seed / drawing code">
+  <button id="prevSeed">Previous</button>
+  <button id="nextSeed">Next</button>
+  <button id="randomSeed">Random</button>
+  <button id="copySeed">Copy</button>
+  <button id="loadSeed">Load</button>
+  <span id="seedState" style="font-size:11px;color:#8fa0b8;min-width:44px;text-align:right">ready</span>
+</div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
