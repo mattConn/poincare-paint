@@ -1,0 +1,11 @@
+export function hsvToRgb(h,s,v){const i=Math.floor(h*6),f=h*6-i,p=v*(1-s),q=v*(1-f*s),t=v*(1-(1-f)*s);let r,g,b;switch(i%6){case 0:r=v;g=t;b=p;break;case 1:r=q;g=v;b=p;break;case 2:r=p;g=v;b=t;break;case 3:r=p;g=q;b=v;break;case 4:r=t;g=p;b=v;break;default:r=v;g=p;b=q;}return [Math.round(r*255),Math.round(g*255),Math.round(b*255)];}
+export function rgbHex(rgb){return '#'+rgb.map(v=>v.toString(16).padStart(2,'0')).join('');}
+
+export class ColorPicker {
+  constructor(state,onChange){this.state=state;this.onChange=onChange;this.canvas=document.getElementById('colorField');this.ctx=this.canvas.getContext('2d');this.xSlider=document.getElementById('colorX');this.ySlider=document.getElementById('colorY');this.picking=false;this.bind();this.sync();}
+  color(){return rgbHex(hsvToRgb(this.state.colorX,1,1-this.state.colorY));}
+  sync(){this.xSlider.value=Math.round(this.state.colorX*1000);this.ySlider.value=Math.round(this.state.colorY*1000);this.state.color=this.color();this.draw();}
+  draw(){const w=this.canvas.width,h=this.canvas.height,img=this.ctx.createImageData(w,h);let n=0;for(let y=0;y<h;y++){const v=1-y/(h-1);for(let x=0;x<w;x++){const [r,g,b]=hsvToRgb(x/(w-1),1,v);img.data[n++]=r;img.data[n++]=g;img.data[n++]=b;img.data[n++]=255;}}this.ctx.putImageData(img,0,0);const px=this.state.colorX*(w-1),py=this.state.colorY*(h-1);this.ctx.save();this.ctx.beginPath();this.ctx.arc(px,py,6,0,Math.PI*2);this.ctx.lineWidth=2;this.ctx.strokeStyle='white';this.ctx.stroke();this.ctx.beginPath();this.ctx.arc(px,py,8,0,Math.PI*2);this.ctx.lineWidth=1;this.ctx.strokeStyle='black';this.ctx.stroke();this.ctx.restore();}
+  fromPointer(e){const r=this.canvas.getBoundingClientRect();this.state.colorX=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width));this.state.colorY=Math.max(0,Math.min(1,(e.clientY-r.top)/r.height));this.sync();this.onChange?.();}
+  bind(){this.canvas.addEventListener('mousedown',e=>{this.picking=true;this.fromPointer(e);});window.addEventListener('mousemove',e=>{if(this.picking)this.fromPointer(e);});window.addEventListener('mouseup',()=>this.picking=false);this.xSlider.oninput=e=>{this.state.colorX=+e.target.value/1000;this.sync();this.onChange?.();};this.ySlider.oninput=e=>{this.state.colorY=+e.target.value/1000;this.sync();this.onChange?.();};}
+}
